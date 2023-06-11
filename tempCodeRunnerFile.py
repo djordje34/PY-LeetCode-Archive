@@ -1,1 +1,2 @@
-                if(ind!=ind2):
+
+                self.findSub(s[1:])
