@@ -2,31 +2,46 @@ import time
 
 
 class Solution:
+    
     def longestPalindrome(self, s: str) -> str:
-        n=len(s)
-        def expand_palindrome(i,j):            
-            while 0<=i<=j<n and s[i]==s[j]:
-                i-=1
-                j+=1                            
-            return (i+1, j)
-        
-        res=(0,0)
+        if len(s) <= 1:
+            return s
+
+        n = len(s)
+        start = 0
+        max_length = 1
+
+        dp = [[False] * n for _ in range(n)]
+
         for i in range(n):
-            b1 = expand_palindrome(i,i)
-            b2 = expand_palindrome(i,i+1) 
-            print(s[b1[0]:b1[1]],"|",print(s[b2[0]:b2[1]]) )           
-            res=max(res, b1, b2,key=lambda x: x[1]-x[0]+1)
-                    
-        return s[res[0]:res[1]] 
-    
-    
+            dp[i][i] = True
+
+        for i in range(n - 1):
+            if s[i] == s[i + 1]:
+                dp[i][i + 1] = True
+                start = i
+                max_length = 2
+
+        for length in range(3, n + 1):
+            for i in range(n - length + 1):
+                j = i + length - 1
+
+                if dp[i + 1][j - 1] and s[i] == s[j]:
+                    dp[i][j] = True
+                    if length > max_length:
+                        start = i
+                        max_length = length
+
+        return s[start:start + max_length]
+
+
 def main():
     start = time.time()
     sol = Solution()
-    ss = ["babaddtattarrattatddetartrateedredividerb"]
+    ss = ["babad","cbbd","babaddtattarrattatddetartrateedredividerb"]
     for s in ss:
-        print(sol.longestPalindrome(s))
-        
+        res = sol.longestPalindrome(s)
+        print(res)
     print(time.time()-start)
     
 
